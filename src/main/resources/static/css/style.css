@@ -7,7 +7,7 @@
     --text: #1f2937;
     --text-muted: #4b5563;
     --border: #e5e7eb;
-    --border-input: #9ca3af;
+    --border-input: #8b8b8b;
 
     --info-bg: #e2e8f0;
     --info-text: #334155;
@@ -121,7 +121,7 @@ h2 {
 
 .nav a:hover,
 .nav a[aria-current="page"] {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.18);
 }
 
 .site-header a:focus-visible {
