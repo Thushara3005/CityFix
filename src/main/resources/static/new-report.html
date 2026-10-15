@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CityFix - Report a problem</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <header class="site-header">
         <div class="container header-inner">
@@ -24,16 +26,16 @@
 
         <form id="report-form" class="card form-card" novalidate>
             <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title">
+                <label for="title">Title <span class="field-requirement">(Required)</span></label>
+                <input type="text" id="title" name="title" aria-required="true">
             </div>
             <div class="form-group">
-                <label for="description">Description</label>
-                <textarea id="description" name="description"></textarea>
+                <label for="description">Description <span class="field-requirement">(Required)</span></label>
+                <textarea id="description" name="description" aria-required="true"></textarea>
             </div>
             <div class="form-group">
-                <label for="category">Category</label>
-                <select id="category" name="category">
+                <label for="category">Category <span class="field-requirement">(Required)</span></label>
+                <select id="category" name="category" aria-required="true">
                     <option value="">Choose a category</option>
                     <option value="POTHOLE">Pothole</option>
                     <option value="STREETLIGHT">Streetlight</option>
@@ -44,22 +46,21 @@
                 </select>
             </div>
             <div class="form-group">
-                <label for="area">Area</label>
-                <input type="text" id="area" name="area" placeholder="For example Downtown">
+                <label for="area">Area <span class="field-requirement">(Required)</span></label>
+                <input type="text" id="area" name="area" placeholder="For example Downtown" aria-required="true">
             </div>
             <div class="form-group">
-                <label for="address">Address</label>
+                <label for="address">Address <span class="field-requirement">(Optional)</span></label>
                 <input type="text" id="address" name="address" placeholder="For example Main St near no. 42">
             </div>
             <div class="form-group">
-                <label for="reporterName">Your name</label>
-                <input type="text" id="reporterName" name="reporterName">
+                <label for="reporterName">Your name <span class="field-requirement">(Required)</span></label>
+                <input type="text" id="reporterName" name="reporterName" autocomplete="name" aria-required="true">
             </div>
             <div class="form-group">
-                <label for="reporterEmail">Your email</label>
-                <input type="email" id="reporterEmail" name="reporterEmail">
+                <label for="reporterEmail">Your email <span class="field-requirement">(Required)</span></label>
+                <input type="email" id="reporterEmail" name="reporterEmail" autocomplete="email" aria-required="true">
             </div>
-
             <button type="submit">Submit report</button>
             <p id="message" class="message"></p>
         </form>
@@ -72,4 +73,5 @@
     <script src="js/api.js"></script>
     <script src="js/new-report.js"></script>
 </body>
+
 </html>

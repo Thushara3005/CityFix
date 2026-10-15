@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CityFix - Report</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <header class="site-header">
         <div class="container header-inner">
@@ -50,7 +52,7 @@
                 <h2>This affects me too</h2>
                 <div class="form-group">
                     <label for="voterEmail">Your email</label>
-                    <input type="email" id="voterEmail" name="voterEmail">
+                    <input type="email" id="voterEmail" name="voterEmail" autocomplete="email">
                 </div>
                 <button type="submit">Upvote</button>
                 <p id="upvote-message" class="message"></p>
@@ -65,4 +67,5 @@
     <script src="js/api.js"></script>
     <script src="js/report-detail.js"></script>
 </body>
+
 </html>
