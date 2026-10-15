@@ -32,10 +32,13 @@
 /* Base */
 * {
     box-sizing: border-box;
+    min-width: 0;
 }
+
 
 body {
     display: flex;
+    overflow-wrap: anywhere;
     flex-direction: column;
     min-height: 100vh;
     margin: 0;
@@ -198,6 +201,7 @@ h2 {
     flex-direction: column;
     gap: var(--space-2);
     padding: var(--space-3);
+    overflow-wrap: anywhere;
 }
 
 .report-card:hover {
@@ -387,7 +391,7 @@ button:hover {
 
 .detail-list {
     display: grid;
-    grid-template-columns: max-content 1fr;
+    grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
     gap: var(--space-2) var(--space-4);
     margin: var(--space-4) 0 0;
 }
@@ -468,4 +472,28 @@ td select {
     .card-grid {
         grid-template-columns: repeat(3, 1fr);
     }
+}
+
+/* Keep long report content inside its container */
+
+.report-card,
+.detail-layout,
+.detail-list,
+.detail-list dd,
+#description {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.table-wrap {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+td,
+th {
+    overflow-wrap: anywhere;
 }
