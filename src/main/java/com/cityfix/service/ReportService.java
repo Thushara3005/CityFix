@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.util.Locale;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,13 +37,17 @@ public class ReportService {
         LocalDateTime now = LocalDateTime.now();
 
         Report report = new Report();
-        report.setTitle(request.title());
-        report.setDescription(request.description());
-        report.setCategory(request.category());
-        report.setArea(request.area());
-        report.setAddress(request.address());
-        report.setReporterName(request.reporterName());
-        report.setReporterEmail(request.reporterEmail());
+        report.setTitle(request.title() == null ? null : request.title().trim());
+report.setDescription(request.description() == null ? null : request.description().trim());
+report.setCategory(request.category());
+report.setArea(request.area() == null ? null : request.area().trim());
+report.setAddress(request.address() == null ? null : request.address().trim());
+report.setReporterName(request.reporterName() == null ? null : request.reporterName().trim());
+report.setReporterEmail(
+        request.reporterEmail() == null
+                ? null
+                : request.reporterEmail().trim().toLowerCase(Locale.ROOT)
+);
         report.setStatus(ReportStatus.REPORTED);
         report.setUpvoteCount(0);
         report.setCreatedAt(now);
@@ -80,43 +84,55 @@ public class ReportService {
         log.info("Report {} status changed to {}", id, newStatus);
         return savedReport;
     }
-
+    
     @Transactional
-    public Report upvoteReport(Long id, String voterEmail) {
-        Report report = findReportById(id);
-        if (upvoteRepository.existsByReportIdAndVoterEmail(id, voterEmail)) {
-            throw new DuplicateUpvoteException(voterEmail);
-        }
+public Report upvoteReport(Long id, String voterEmail) {
+    Report report = findReportById(id);
 
-        Upvote upvote = new Upvote();
-        upvote.setReport(report);
-        upvote.setVoterEmail(voterEmail);
-        upvote.setCreatedAt(LocalDateTime.now());
-        upvoteRepository.save(upvote);
+    String normalizedEmail = voterEmail == null
+            ? null
+            : voterEmail.trim().toLowerCase(Locale.ROOT);
 
-        report.setUpvoteCount(report.getUpvoteCount() + 1);
-        return reportRepository.save(report);
+    if (normalizedEmail == null || normalizedEmail.isBlank()) {
+        throw new IllegalArgumentException("Voter email is required");
     }
 
-    public Map<String, Map<String, Long>> getStats() {
-        Map<String, Long> byStatus = new LinkedHashMap<>();
-        for (ReportStatus status : ReportStatus.values()) {
-            byStatus.put(status.name(), reportRepository.countByStatus(status));
-        }
-
-        Map<String, Long> byCategory = new LinkedHashMap<>();
-        for (Category category : Category.values()) {
-            byCategory.put(category.name(), reportRepository.countByCategory(category));
-        }
-
-        return Map.of("byStatus", byStatus, "byCategory", byCategory);
+    if (upvoteRepository.existsByReportIdAndVoterEmail(id, normalizedEmail)) {
+        throw new DuplicateUpvoteException(normalizedEmail);
     }
 
-    private Sort createSort(String sort) {
-        Sort newestFirst = Sort.by(Sort.Direction.DESC, "createdAt");
-        if ("votes".equals(sort)) {
-            return Sort.by(Sort.Direction.DESC, "upvoteCount").and(newestFirst);
-        }
-        return newestFirst;
+    Upvote upvote = new Upvote();
+    upvote.setReport(report);
+    upvote.setVoterEmail(normalizedEmail);
+    upvote.setCreatedAt(LocalDateTime.now());
+    upvoteRepository.save(upvote);
+
+    report.setUpvoteCount(report.getUpvoteCount() + 1);
+    return reportRepository.save(report);
+}
+public Map<String, Map<String, Long>> getStats() {
+    Map<String, Long> byStatus = new LinkedHashMap<>();
+
+    for (ReportStatus status : ReportStatus.values()) {
+        byStatus.put(status.name(), reportRepository.countByStatus(status));
     }
+
+    Map<String, Long> byCategory = new LinkedHashMap<>();
+
+    for (Category category : Category.values()) {
+        byCategory.put(category.name(), reportRepository.countByCategory(category));
+    }
+
+    return Map.of("byStatus", byStatus, "byCategory", byCategory);
+}
+
+private Sort createSort(String sort) {
+    Sort newestFirst = Sort.by(Sort.Direction.DESC, "createdAt");
+
+    if ("votes".equals(sort)) {
+        return Sort.by(Sort.Direction.DESC, "upvoteCount").and(newestFirst);
+    }
+
+    return newestFirst;
+}
 }
